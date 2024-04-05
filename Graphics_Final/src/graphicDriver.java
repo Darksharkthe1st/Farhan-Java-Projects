@@ -1,7 +1,7 @@
 import javax.swing.JFrame;
 
 public class graphicDriver {
-	public static void main(String[] args) {
+	public static void main(String[] args) throws InterruptedException {
 		JFrame mainframe = new JFrame();
 		System.out.println("HI");
 		mainframe.setSize(1000,800);
@@ -9,11 +9,17 @@ public class graphicDriver {
 		mainframe.setTitle("Farhan Kittur - CSA Final Project");
 		mainframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		Cube cubey = new Cube(100,0,0,4);
-		rectangularPrism rectangley = new rectangularPrism(100,50,100,150);
+		rectangularPrism rectangley = new rectangularPrism(100,300,300,150,150,200,50,50);
 		mainframe.add(rectangley);
 		//mainframe.add(cubey);
+		double theta = 1;
 		while (true) {
 			mainframe.repaint();
+
+			rectangley.setAx((int)(Math.sin(theta) * 100));
+			rectangley.setAy((int)(Math.cos(theta) * 200));
+			//theta = theta + 0.05;
+			Thread.sleep(100);
 		}
 	}
 	/*

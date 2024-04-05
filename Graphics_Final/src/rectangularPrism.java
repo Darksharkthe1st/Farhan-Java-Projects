@@ -6,15 +6,19 @@ import java.awt.Polygon;
 import javax.swing.JPanel;
 
 public class rectangularPrism extends JPanel {
-	int size, x, y, z, yaw, pitch, roll;
+	int size, x, y, z, length, height, ax, ay;
 	Color[] colors = new Color[6];
 
-	public rectangularPrism(int size, int x, int y, int z) {
+	public rectangularPrism(int size, int x, int y, int z, int ax, int ay, int length, int height) {
 		super();
 		this.size = size;
 		this.x = x;
 		this.y = y;
 		this.z = z;
+		this.ax = ax;
+		this.ay = ay;
+		this.length = length;
+		this.height = height;
 		for (int i = 0; i < colors.length; i++) {
 			colors[i] = randColor();
 		}
@@ -29,7 +33,7 @@ public class rectangularPrism extends JPanel {
 		this.size = size;
 	}
 
-	public int getX() {
+	public int getXPos() {
 		return x;
 	}
 
@@ -37,7 +41,7 @@ public class rectangularPrism extends JPanel {
 		this.x = x;
 	}
 
-	public int getY() {
+	public int getYPos() {
 		return y;
 	}
 
@@ -53,19 +57,79 @@ public class rectangularPrism extends JPanel {
 		this.z = z;
 	}
 
+	
+	
+	public int getLength() {
+		return length;
+	}
+
+	public void setLength(int length) {
+		this.length = length;
+	}
+
+	public int getHeighty() {
+		return height;
+	}
+
+	public void setHeight(int height) {
+		this.height = height;
+	}
+
+	public int getAx() {
+		return ax;
+	}
+
+	public void setAx(int ax) {
+		this.ax = ax;
+	}
+
+	public int getAy() {
+		return ay;
+	}
+
+	public void setAy(int ay) {
+		this.ay = ay;
+	}
+
+	public Color[] getColors() {
+		return colors;
+	}
+
+	public void setColors(Color[] colors) {
+		this.colors = colors;
+	}
+
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		int counter = 0;
-		g.setColor(colors[counter++]);
-		g.fillRect(x, y, size, size);
-
-		g.setColor(colors[counter++]);
-		g.fillRect(x + 30, y + 30, size, size);
+//		int ax = 200;
+//		int ay = 50;
+//		int length = size / 2;
+//		int height = size;
+		{
+			g.setColor(colors[counter++]);
+			int[] xpoints = { x, x + length, x + length, x, x };
+			int[] ypoints = { y, y, y + height, y + height, y };
+			int npoints = xpoints.length;
+			Polygon p = new Polygon(xpoints, ypoints, npoints);
+			g.fillPolygon(p);
+		}
+		
 		{
 
 			g.setColor(colors[counter++]);
-			int[] xpoints = { x + size, x + size, x + size + 30, x + size + 30, x + size };
-			int[] ypoints = { y, y + size, y + size + 30, y + 30, y };
+			int[] xpoints = { x + ax, x + length + ax, x + length + ax, x + ax, x + ax };
+			int[] ypoints = { y + ay, y + ay, y + height + ay, y + height + ay, y + ay };
+			int npoints = xpoints.length;
+			Polygon p = new Polygon(xpoints, ypoints, npoints);
+			g.fillPolygon(p);
+		}
+		
+		{
+
+			g.setColor(colors[counter++]);
+			int[] xpoints = { x + length, x + length, x + length + ax, x + length + ax, x + length };
+			int[] ypoints = { y, y + height, y + height + ay, y + ay, y };
 			int npoints = xpoints.length;
 			Polygon p = new Polygon(xpoints, ypoints, npoints);
 			g.fillPolygon(p);
@@ -73,8 +137,8 @@ public class rectangularPrism extends JPanel {
 		{
 
 			g.setColor(colors[counter++]);
-			int[] xpoints = { x, x + 30, x + size + 30, x + size, x + 30 };
-			int[] ypoints = { y + size, y + size + 30, y + size + 30, y + size, y + size };
+			int[] xpoints = { x, x + ax, x + length + ax, x + length, x + ax };
+			int[] ypoints = { y + height, y + height + ay, y + height + ay, y + height, y + height };
 			int npoints = xpoints.length;
 			Polygon p = new Polygon(xpoints, ypoints, npoints);
 			g.fillPolygon(p);
@@ -82,8 +146,8 @@ public class rectangularPrism extends JPanel {
 		{
 
 			g.setColor(colors[counter++]);
-			int[] xpoints = {x, x + 30, x + 30, x, x};
-			int[] ypoints = {y, y + 30, y + size + 30, y + size, y};
+			int[] xpoints = {x, x + ax, x + ax, x, x};
+			int[] ypoints = {y, y + ay, y + height + ay, y + height, y};
 			int npoints = xpoints.length;
 			Polygon p = new Polygon(xpoints, ypoints, npoints);
 			g.fillPolygon(p);
@@ -91,8 +155,8 @@ public class rectangularPrism extends JPanel {
 		{
 
 			g.setColor(colors[counter++]);
-			int[] xpoints = {x, x + 30, x + size + 30, x + size, x};
-			int[] ypoints = {y, y + 30, y + 30, y, y};
+			int[] xpoints = {x, x + ax, x + length + ax, x + length, x};
+			int[] ypoints = {y, y + ay, y + ay, y, y};
 			int npoints = xpoints.length;
 			Polygon p = new Polygon(xpoints, ypoints, npoints);
 			g.fillPolygon(p);
