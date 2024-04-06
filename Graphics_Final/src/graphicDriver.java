@@ -9,7 +9,7 @@ public class graphicDriver {
 		mainframe.setTitle("Farhan Kittur - CSA Final Project");
 		mainframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		Cube cubey = new Cube(100,0,0,4);
-		rectangularPrism rectangley = new rectangularPrism(100,300,300,150,150,200,50,50);
+		rectangularPrism rectangley = new rectangularPrism(300,300,150,150,200,50,50);
 		mainframe.add(rectangley);
 		//mainframe.add(cubey);
 		double theta = 1;
@@ -18,7 +18,7 @@ public class graphicDriver {
 
 			rectangley.setAx((int)(Math.sin(theta) * 100));
 			rectangley.setAy((int)(Math.cos(theta) * 200));
-			//theta = theta + 0.05;
+			theta = theta + 0.1;
 			Thread.sleep(100);
 		}
 	}

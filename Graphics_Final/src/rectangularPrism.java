@@ -6,12 +6,12 @@ import java.awt.Polygon;
 import javax.swing.JPanel;
 
 public class rectangularPrism extends JPanel {
-	int size, x, y, z, length, height, ax, ay;
+	int x, y, z, length, height, ax, ay;
 	Color[] colors = new Color[6];
+	
 
-	public rectangularPrism(int size, int x, int y, int z, int ax, int ay, int length, int height) {
+	public rectangularPrism(int x, int y, int z, int ax, int ay, int length, int height) {
 		super();
-		this.size = size;
 		this.x = x;
 		this.y = y;
 		this.z = z;
@@ -23,14 +23,6 @@ public class rectangularPrism extends JPanel {
 			colors[i] = randColor();
 		}
 
-	}
-
-	public int getsize() {
-		return size;
-	}
-
-	public void setSize(int size) {
-		this.size = size;
 	}
 
 	public int getXPos() {
