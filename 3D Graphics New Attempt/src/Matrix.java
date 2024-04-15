@@ -7,7 +7,7 @@ public class Matrix {
 	//Dimensions
 	int m, n;
 	
-	//The matrix itself
+	//The matrix itself (2D array)
 	double[][] arraytrix;
 	public Matrix(double[][] arraytrix) {
 		super();
@@ -16,21 +16,19 @@ public class Matrix {
 		n = arraytrix[0].length;
 	}
 	
-	//This constructor is only for Point3d, which makes its own arraytrix.
-	protected Matrix(int m, int n) {
-		this.arraytrix = new double[4][1];
-		this.m = m;
-		this.n = n;
-	}
-	
 	//Multiplies "this" by another matrix and stores the result in "this"
 	public void multiply(Matrix other) {
 		if (n != other.m) return;
 		double[][] outputArr = new double[m][other.n];
 		int sum;
+		
+		//For each row in original
 		for (int a = 0; a < m; a++) {
+			
+			//For each col in other
 			for (int col = 0; col < other.n; col++) {
 				sum = 0;
+				//Add up product of matching values from row of me and col of other
 				for (int r = 0; r < n; r++) {
 					sum += arraytrix[a][r] * other.arraytrix[r][col];
 				}
@@ -42,20 +40,19 @@ public class Matrix {
 		this.n = outputArr[0].length;
 	}
 	
+	
+	//Non-mutating version of non-static multiply
 	public static Matrix multiply(Matrix one, Matrix two) {
 		if (one == null || two == null) return null;
 		if (one.n != two.m) return null;
 		double[][] outputArr = new double[one.m][two.n];
 		int sum;
-		/*
-		 * for (int a = 0; a < one.m; a++) { for (int col = 0; col < two.n; col++) { sum
-		 * = 0; for (int r = 0; r < one.n; r++) { sum += one.arraytrix[a][r] *
-		 * two.arraytrix[r][col]; } outputArr[a][col] = sum; } }
-		 */
-		
+		//For each row in original
 		for (int a = 0; a < one.m; a++) {
+			//For each col in other
 			for (int c = 0; c < two.n; c++) {
 				sum = 0;
+				//Add up product of matching values from row of one and col of two
 				for (int r = 0; r < two.m; r++) {
 					sum += one.arraytrix[a][r] * two.arraytrix[r][c];
 				}
@@ -65,6 +62,7 @@ public class Matrix {
 		return new Matrix(outputArr);
 	}
 	
+	//Multiplies multiple matrices
 	public static Matrix multiply(Matrix[] matrices) {
 		if (matrices.length == 0) return null;
 		Matrix result = matrices[0];
@@ -74,6 +72,30 @@ public class Matrix {
 		return result;
 	}
 	
+	//Makes an identity matrix
+	public static Matrix identity(int size) {
+		double[][] arrayx = new double[size][size];
+		for (int i = 0; i < size; i++) {
+			arrayx[i][i] = 1;
+		}
+		return new Matrix(arrayx);
+	}
+	
+	//Checks if a matrix is the identity matrix
+	public boolean isIdentity() {
+		for (int i = 0; i < m; i++) {
+			for (int j = 0; j < n; j++) {
+				if (i == j) {
+					if (Math.abs(arraytrix[i][j] - 1) > 0.01) return false;
+				} else {
+					if (Math.abs(arraytrix[i][j]) > 0.01) return false;
+				}
+			}
+		}
+		return true;
+	}
+	
+	//Just prints all the individual rows using arrays.tostring
 	public String toString() {
 		String output = "";
 		for (double[] arr : arraytrix)

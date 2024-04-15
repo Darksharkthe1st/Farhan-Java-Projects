@@ -1,131 +1,117 @@
 // Self made Graphics loading list so layering can happen :)
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Shape;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Arrays;
 
-class ShapeList {
-		public class GraphicObject {
-			public Shape shape;
-			public Color color;
-			public boolean fillOrDraw;
-			public int renderOrder;
+import javax.swing.JPanel;
 
-			public GraphicObject() {
-			}
+//This class takes care of reducing buffering, ordering shapes, and drawing them
+class ShapeList3D extends JPanel {
+	ArrayList<Shape3D> shapeList = new ArrayList<Shape3D>(); // List of all the Shape3Ds
+	int shapeCount = 0;
+	int width, height; // Screen width and height
+	Color bgColor = new Color(255, 255, 255); // White.
 
-			public GraphicObject(Shape shape, Color color, boolean fillOrDraw, int renderOrder) {
-				this.shape = shape;
-				this.color = color;
-				this.fillOrDraw = fillOrDraw;
-				this.renderOrder = renderOrder;
-			}
+	// Goal: when transformations are made, updateOnChanges becomes true,
+	// All points get multiplied by the Matrix "transformation", updateOnChanges
+	// becomes false.
+	// This way, we don't execute pointless transformations when changes aren't
+	// made.
+	boolean updateOnChanges = true; // Planned for future.
+	Matrix transformation;
+
+	ShapeList3D(int w, int h) {
+		width = w;
+		height = h;
+		transformation = new Matrix(new double[4][4]);
+	}
+
+	int add(Shape3D s) {
+		if (s == null) {
+			return -1;
+		}
+		shapeList.add(s);
+		shapeCount++;
+		return (shapeCount - 1);
+	}
+
+	// True for fill, false for draw
+	void replace(int index, Shape3D s, boolean isFilled) {
+		shapeList.set(index, s);
+	}
+
+	void setBG(Color c) {
+		bgColor = c;
+	}
+
+	Shape3D getShape3DByID(int ID) {
+		return shapeList.get(ID);
+	}
+
+	public void addTransformation(Matrix m) {
+		transformation.multiply(m);
+	}
+
+	void renderShape3Ds(Graphics g) {
+		// We draw to a BufferedImage before pasting on screen so
+		// the screen doesn't flash white every time we begin redrawing
+		BufferedImage screen = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+		// We get the Graphics object of the image so we can draw to it
+		Graphics screenGraphics = screen.getGraphics();
+
+		// Polygon border thickness
+		((Graphics2D) screenGraphics).setStroke(new BasicStroke(2));
+
+		// We draw to the image
+		screenGraphics.setColor(bgColor);
+		Rectangle2D bg = new Rectangle2D.Double(0, 0, width, height);
+		((Graphics2D) screenGraphics).fill(bg);
+
+		// Loop through and count the faces to paint
+		int totalFaces = 0;
+		for (Shape3D s : shapeList) {
+			totalFaces += s.countVisible();
 		}
 
-		Graphics g;
+		// Make our array
+		Polygon3D[] polygons = new Polygon3D[totalFaces];
 
-		ArrayList<GraphicObject> objList = new ArrayList<GraphicObject>();
-		int shapeCount = 0;
-		int width, height;
-		Color bgColor = new Color(255, 255, 255);
-		boolean updateOnChanges = true;
-
-		ShapeList(int w, int h) {
-			if (w < 0 || h < 0) {
-				return;
-			}
-			width = w;
-			height = h;
-			// A dummy shape to start off the program so the arrays aren't all null
-			objList.add(new GraphicObject(new Rectangle2D.Double(0, 0, 1, 1), new Color(255, 255, 255), true, 0));
-			shapeCount++;
+		// Loop through and get all the polygons we need to draw
+		int index = 0;
+		for (Shape3D s : shapeList) {
+			index = s.addTo(polygons, index);
 		}
 
-		int draw(Shape s, Color c) {
-			if (s == null || c == null) {
-				return -1;
-			}
-			objList.add(new GraphicObject(s, c, false, shapeCount++));
-			return (shapeCount - 1);
-		}
+		// Sort by viewing order
+		Arrays.sort(polygons);
 
-		int fill(Shape s, Color c) {
-			if (s == null || c == null) {
-				return -1;
-			}
-			objList.add(new GraphicObject(s, c, true, shapeCount++));
-			return (shapeCount - 1);
-		}
+		// Draw them all
+		for (int i = 0; i < index; i++) {
+			Polygon3D poly = polygons[i];
+			if (poly.getAvgZ() > 0) {
+				screenGraphics.setColor(poly.getShadedFill());
+				screenGraphics.fillPolygon(poly.getPolygon());
 
-		// True for fill, false for draw
-		void replace(int index, Shape s, boolean isFilled) {
-
-			objList.get(index).shape = s;
-			objList.get(index).fillOrDraw = isFilled;
-		}
-
-		void setBG(Color c) {
-			bgColor = c;
-		}
-
-		Shape getShapeByID(int ID) {
-			return objList.get(ID).shape;
-		}
-
-		boolean getFillOrDrawByID(int ID) {
-			return objList.get(ID).fillOrDraw;
-		}
-
-		void renderShapes(Graphics g) {
-			// The screen business is to avoid buffering.
-			// (The name bufferedImage doesn't have anything to do with buffering, it's just
-			// an image for our use cases)
-			BufferedImage screen = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-			// We get the Graphics object of the image so we can draw to it
-			Graphics2D tg2d = (Graphics2D) screen.getGraphics();
-
-			// We draw to the image
-			tg2d.setColor(bgColor);
-			Rectangle2D bg = new Rectangle2D.Double(0, 0, width, height);
-			tg2d.fill(bg);
-			for (int i = 0; i < shapeCount; i++) {
-				GraphicObject graphObj = objList.get(i);
-				tg2d.setColor(graphObj.color);
-				if (graphObj.fillOrDraw) {
-					tg2d.fill(graphObj.shape);
-				} else {
-					tg2d.draw(graphObj.shape);
+				// If it has an outline, draw it
+				if (poly.getOutlineColor() != null) {
+					screenGraphics.setColor(poly.getOutlineColor());
+					screenGraphics.drawPolygon(poly.getPolygon());
 				}
 			}
 
-			// We paste the image onto our Graphics window
-			g.drawImage(screen, 0, 0, width, height, bgColor, null);
-
 		}
-
-		void replaceShape(int id, int toIndex) {
-			GraphicObject focusObject = objList.get(id);
-			int prevOrder = focusObject.renderOrder;
-			if (toIndex < prevOrder) {
-				for (int i = 0; i < shapeCount; i++) {
-					GraphicObject graphObj = objList.get(i);
-					if (graphObj.renderOrder >= toIndex && graphObj.renderOrder <= prevOrder) {
-						graphObj.renderOrder++;
-					}
-				}
-			} else if (prevOrder < toIndex) {
-				for (int i = 0; i < shapeCount; i++) {
-					GraphicObject graphObj = objList.get(i);
-					if (graphObj.renderOrder <= toIndex && graphObj.renderOrder >= prevOrder) {
-						graphObj.renderOrder--;
-					}
-				}
-			}
-			focusObject.renderOrder = toIndex;
-		}
+		// We paste the image onto our Graphics window
+		g.drawImage(screen, 0, 0, width, height, bgColor, null);
 
 	}
+
+	public void paintComponent(Graphics g) {
+		renderShape3Ds(g);
+	}
+}

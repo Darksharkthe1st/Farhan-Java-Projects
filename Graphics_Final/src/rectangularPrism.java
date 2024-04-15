@@ -8,7 +8,6 @@ import javax.swing.JPanel;
 public class rectangularPrism extends JPanel {
 	int x, y, z, length, height, ax, ay;
 	Color[] colors = new Color[6];
-	
 
 	public rectangularPrism(int x, int y, int z, int ax, int ay, int length, int height) {
 		super();
