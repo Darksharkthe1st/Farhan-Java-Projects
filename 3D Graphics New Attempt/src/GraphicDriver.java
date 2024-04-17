@@ -59,20 +59,27 @@ public class GraphicDriver {
 			if (Math.abs(x) > 10)
 				increase = !increase;
 			
-			double newX = (MouseInfo.getPointerInfo().getLocation().x - mainframe.getLocation().x - mainframe.getWidth() /2);
-			double newY = (MouseInfo.getPointerInfo().getLocation().y - mainframe.getLocation().y - mainframe.getHeight() /2);
-
-			b.setX(newX);
-			b.setY(newY);
-			System.out.println(b.getXPos() + ", " + b.getYPos());
-
+//			double newX = (MouseInfo.getPointerInfo().getLocation().x - mainframe.getLocation().x - mainframe.getWidth() /2);
+//			double newY = (MouseInfo.getPointerInfo().getLocation().y - mainframe.getLocation().y - mainframe.getHeight() /2);
+			if (count++ < 1000)
+			b.setX(x/2);
+			else 
+				b.rotateAbout('x', 2);
+			b2.setX(x/2);
+mainframe.repaint();
 			//b.rotateAbout('x', 5);
 			//b2.setX(x);
 			b2.rotateAbout('x', 2);
+			//b.rotateAbout('y', 2);
+			System.out.println(b.getXPos() + ", " + b.getYPos() + ", " + b.getZ());
+			System.out.println(b.cx + ", " + b.cy + ", " + b.cz);
+			
 			System.out.println(obj.getXPos() + ", " + obj.getYPos() + ", " + obj.getZ());
 			//obj.rotateAbout('x', 4);
-			obj.setX(x/2);
-			obj.setY(x/2);
+			//obj.setX(x/2);
+			obj.rotateAbout('x', 1);
+			System.out.println(obj.getP0());
+			//obj.setY(x/2);
 		}
 //		
 //		Matrix m;

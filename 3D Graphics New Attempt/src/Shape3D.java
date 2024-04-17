@@ -53,7 +53,7 @@ public abstract class Shape3D {
 		return x;
 	}
 
-	public final void setX(double x) {
+	public  void setX(double x) {
 		moveBy(x - this.x, 0, 0);
 	}
 
@@ -146,8 +146,8 @@ public abstract class Shape3D {
 	
 	protected abstract void setAllPoints();
 	
-	//Makes the polygon from the points. Final so it cannot be changed.
-	protected void makePolygons() {
+	//Makes the polygon from the points.  so it cannot be changed.
+	protected final void makePolygons() {
 		setCenter();
 		polygons = new Polygon3D[faces];
 		for (int i = 0; i < faces; i++) {
@@ -155,6 +155,12 @@ public abstract class Shape3D {
 			polygons[i].setOutlineColor(outlineColor);
 		}
 		setPolygonNames();
+	}
+	
+	protected final void refreshPolygons() {
+		for (int i = 0; i < faces; i++) {
+			polygons[i].refresh();
+		}
 	}
 	
 	//Sets the names of the polygons for testing
@@ -166,7 +172,7 @@ public abstract class Shape3D {
 	}
 	
 	//Paints directly on the graphics window for quick testing
-	public void paintMe(Graphics g) {
+	public final void paintMe(Graphics g) {
 		for (int face = 0; face < points.length; face++) {
 			if (polygons[face] != null && polygons[face].getAvgZ() > 0) {
 				g.setColor(colors[face]);
@@ -176,7 +182,8 @@ public abstract class Shape3D {
 	}
 	
 	//Rotates the shape about the specified axis by theta degrees, where axis is x, y, or z.
-	public void rotateAbout(char axis, double theta) {
+	public final void rotateAbout(char axis, double theta) {
+		setCenter();
 		Matrix rotation = Point3D.rotationMatrix(theta, axis);
 		for (Point3D point : allPoints) {
 			point.setX(point.getX() - cx);
@@ -188,6 +195,7 @@ public abstract class Shape3D {
 			if (axis == 'z') dist1 = Math.sqrt(Math.pow(point.getX(), 2) + Math.pow(point.getY(), 2));
 			else if (axis == 'x') dist1 = Math.sqrt(Math.pow(point.getZ(), 2) + Math.pow(point.getY(), 2));
 			else dist1 = Math.sqrt(Math.pow(point.getX(), 2) + Math.pow(point.getZ(), 2));
+			
 			point.matrixTransform(rotation);
 			double dist2;
 			
@@ -204,10 +212,11 @@ public abstract class Shape3D {
 			point.setY(point.getY() + cy);
 			point.setZ(point.getZ() + cz);
 		}
-		makePolygons();
+		refreshPolygons();
 	}
 	
-	public void moveBy(double dx, double dy, double dz) {
+	//Moves the shape by dx, dy, and dz.
+	public final void moveBy(double dx, double dy, double dz) {
 		x+= dx;
 		y+= dy;
 		z+= dz;
@@ -217,11 +226,11 @@ public abstract class Shape3D {
 				p.matrixTransform(transMatrix);
 			}
 		}
-		makePolygons();
 		setCenter();
+		refreshPolygons();
 	}
 	
-	public int countVisible() {
+	public final int countVisible() {
 		int count = 0;
 		for (Polygon3D p : polygons) {
 			if (p.checkNormal() && Math.abs(p.getAvgX()) < GraphicDriver.screenWidth/2 && Math.abs(p.getAvgY()) < GraphicDriver.screenHeight/2)
@@ -231,7 +240,7 @@ public abstract class Shape3D {
 	}
 	
 	//Adds to the existing list of Polygon3Ds
-	public int addTo(Polygon3D[] list, int index) {
+	public final int addTo(Polygon3D[] list, int index) {
 		
 		if (polygons == null) makePolygons();
 		for (Polygon3D p : polygons) {
@@ -240,6 +249,11 @@ public abstract class Shape3D {
 				list[index++] = p;
 		}
 		return index;
+	}
+	
+	//returns the 0th point in the shape.
+	public Point3D getP0() {
+		return allPoints[0];
 	}
 	
 	

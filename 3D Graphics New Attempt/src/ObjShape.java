@@ -7,12 +7,8 @@ import java.util.Arrays;
 import java.util.Scanner;
 
 public class ObjShape extends Shape3D {
-	Point3D[] allPoints;
-	Color[] colors;
-	Point3D[][] points;
-	Polygon3D[] polygons;
 	String filepath;
-	ArrayList<String> myFaces;
+	ArrayList<String> myFaces = new ArrayList<String>();
 
 	public ObjShape(double x, double y, double z, String filepath) throws FileNotFoundException {
 		super(x, y, z);
@@ -27,15 +23,15 @@ public class ObjShape extends Shape3D {
 		makePolygons();
 		setCenter();
 		rotateAbout('x',180);
-		moveBy(0,0,10);
+		moveBy(0,0,140);
 	}
 
 	@Override
 	protected void setCenter() {
 		// TODO Auto-generated method stub
-		cx = x; cy = y; cz = z + 3;
+		cx = x; cy = y; cz = z-800;
 	}
-
+	
 	@Override
 	protected void setColors() {
 		// TODO Auto-generated method stub
@@ -102,16 +98,6 @@ public class ObjShape extends Shape3D {
 		}
 	}
 
-	// Makes the polygon from the points. Final so it cannot be changed.
-	protected void makePolygons() {
-		this.polygons = new Polygon3D[faces];
-		for (int i = 0; i < faces; i++) {
-			polygons[i] = new Polygon3D(colors[i], points[i]);
-			polygons[i].setOutlineColor(outlineColor);
-		}
-		setPolygonNames();
-	}
-
 	// Sets the names of the polygons for testing
 	protected void setPolygonNames() {
 		for (int i = 0; i < faces; i++) {
@@ -120,91 +106,5 @@ public class ObjShape extends Shape3D {
 
 	}
 
-	// Paints directly on the graphics window for quick testing
-	public void paintMe(Graphics g) {
-		for (int face = 0; face < points.length; face++) {
-			if (polygons[face] != null && polygons[face].getAvgZ() > 0) {
-				g.setColor(colors[face]);
-				g.fillPolygon(polygons[face].getPolygon());
-			}
-		}
-	}
-
-	// Rotates the shape about the specified axis by theta degrees, where axis is x,
-	// y, or z.
-	public void rotateAbout(char axis, double theta) {
-		Matrix rotation = Point3D.rotationMatrix(theta, axis);
-
-		for (Point3D point : allPoints) {
-			point.setX(point.getX() - cx);
-			point.setY(point.getY() - cy);
-			point.setZ(point.getZ() - cz);
-
-			double dist1;
-
-			if (axis == 'z')
-				dist1 = Math.sqrt(Math.pow(point.getX(), 2) + Math.pow(point.getY(), 2));
-			else if (axis == 'x')
-				dist1 = Math.sqrt(Math.pow(point.getZ(), 2) + Math.pow(point.getY(), 2));
-			else
-				dist1 = Math.sqrt(Math.pow(point.getX(), 2) + Math.pow(point.getZ(), 2));
-			point.matrixTransform(rotation);
-			double dist2;
-
-			if (axis == 'z')
-				dist2 = Math.sqrt(Math.pow(point.getX(), 2) + Math.pow(point.getY(), 2));
-			else if (axis == 'x')
-				dist2 = Math.sqrt(Math.pow(point.getZ(), 2) + Math.pow(point.getY(), 2));
-			else
-				dist2 = Math.sqrt(Math.pow(point.getX(), 2) + Math.pow(point.getZ(), 2));
-			if (axis != 'x')
-				point.setX(point.getX() * dist1 / dist2);
-			if (axis != 'y')
-				point.setY(point.getY() * dist1 / dist2);
-			if (axis != 'z')
-				point.setZ(point.getZ() * dist1 / dist2);
-			point.setX(point.getX() + cx);
-			point.setY(point.getY() + cy);
-			point.setZ(point.getZ() + cz);
-		}
-		makePolygons();
-	}
-
-	public void moveBy(double dx, double dy, double dz) {
-		x += dx;
-		y += dy;
-		z += dz;
-		for (Point3D[] facePoints : points) {
-			for (Point3D p : facePoints) {
-				p.move(dx, dy, dz);
-			}
-		}
-		makePolygons();
-		setCenter();
-	}
-
-	public int countVisible() {
-		int count = 0;
-		for (Polygon3D p : polygons) {
-			if (p.checkNormal() && Math.abs(p.getAvgX()) < GraphicDriver.screenWidth / 2
-					&& Math.abs(p.getAvgY()) < GraphicDriver.screenHeight / 2)
-				count++;
-		}
-		return count;
-	}
-
-	// Adds to the existing list of Polygon3Ds
-	public int addTo(Polygon3D[] list, int index) {
-		if (polygons == null)
-			makePolygons();
-		for (Polygon3D p : polygons) {
-			// If in bounds and facing the viewer, draw it
-			if (p.checkNormal() && Math.abs(p.getAvgX()) < GraphicDriver.screenWidth / 2
-					&& Math.abs(p.getAvgY()) < GraphicDriver.screenHeight / 2) {
-				list[index++] = p;
-			}
-		}
-		return index;
-	}
 
 }

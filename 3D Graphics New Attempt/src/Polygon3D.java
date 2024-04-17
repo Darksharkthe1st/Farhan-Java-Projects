@@ -31,6 +31,7 @@ public class Polygon3D implements Comparable {
 		this.name = "Polygon";
 		this.actualPoints = points;
 		projectToPolygon(points);
+		changesMade = true;
 	}
 	
 	public void projectToPolygon(Point3D[] points) {
@@ -39,6 +40,16 @@ public class Polygon3D implements Comparable {
 		for (int i = 0; i < result.length; i++) 
 			result[i] = Point3D.project(projector, points[i]);
 		setPoints(result);
+		changesMade = true;
+	}
+	
+	public void refresh() {
+		Matrix projector = Point3D.projectionMatrix();
+		Point3D[] result = new Point3D[actualPoints.length];
+		for (int i = 0; i < result.length; i++) 
+			result[i] = Point3D.project(projector, actualPoints[i]);
+		setPoints(result);
+		changesMade = true;
 	}
 	
 	//Just for construction, can be used if needed to change the polygon
