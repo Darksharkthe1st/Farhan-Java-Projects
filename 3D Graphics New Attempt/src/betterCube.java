@@ -4,6 +4,8 @@ import java.awt.Color;
 //Replacement for class cube to extend Shape3D
 public class betterCube extends Shape3D {
 	double dx, dy, dz;
+	
+	//l is x length, h is y length, w is z length
 	public betterCube(double x, double y, double z, double l, double w, double h) {
 		super(x, y, z, 6);
 		this.dx = l/2;
@@ -57,22 +59,22 @@ public class betterCube extends Shape3D {
 		Point3D h = allPoints[7];
 
 		// Front Face
-		points[0] = new Point3D[] { a, b, c, d };
+		points[0] = new Point3D[] { d, c, b, a };
 
 		// Right Face
-		points[1] = new Point3D[] { f, a, d, g };
+		points[1] = new Point3D[] { g, d, a, f };
 
 		// Back Face
-		points[2] = new Point3D[] { e, f, g, h };
+		points[2] = new Point3D[] { h, g, f, e };
 
 		// Left Face
-		points[3] = new Point3D[] { b, e, h, c };
+		points[3] = new Point3D[] { c, h, e, b };
 
 		// Bottom Face
-		points[4] = new Point3D[] { d, c, h, g };
+		points[4] = new Point3D[] { g, h, c, d };
 
 		// Top Face
-		points[5] = new Point3D[] { b, a, f, e };
+		points[5] = new Point3D[] { e, f, a, b };
 	}
 	
 	protected void setAllPoints() {

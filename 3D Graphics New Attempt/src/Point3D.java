@@ -170,9 +170,9 @@ public class Point3D{
 		
 		
 		Point3D normal = new Point3D(
-				(ay * cz) - (az * cy),
-				(az * cx) - (ax * cz),
-				(ax) * (cy) - (ay) * (cx));
+				-((ay * cz) - (az * cy)),
+				-((az * cx) - (ax * cz)),
+				-((ax) * (cy) - (ay) * (cx)));
 		return dotProduct(normal.normalize(), new Point3D(b.x - camera.x, b.y - camera.y, b.z - camera.z).normalize());
 	}
 	

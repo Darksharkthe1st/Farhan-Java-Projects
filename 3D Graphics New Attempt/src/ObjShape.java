@@ -7,29 +7,37 @@ import java.util.Arrays;
 import java.util.Scanner;
 
 public class ObjShape extends Shape3D {
-	String filepath;
+	String objFilename;
+	String filedir;
+	String mtlFilename;
 	ArrayList<String> myFaces = new ArrayList<String>();
-
+	ArrayList<String> materials = new ArrayList<String>();
+	double xOffset, yOffset, zOffset;
 	public ObjShape(double x, double y, double z, String filepath) throws FileNotFoundException {
 		super(x, y, z);
-		x = 0;
-		y = 0;
-		z = 0;
 		
-		this.filepath = filepath;
+		this.objFilename = filepath.substring(filepath.lastIndexOf('\\')+1);
+		this.filedir = filepath.substring(0,filepath.lastIndexOf('\\') + 1);
 		setAllPoints();
 		setPoints();
 		setColors();
 		makePolygons();
 		setCenter();
-		rotateAbout('x',180);
-		moveBy(0,0,140);
+		xOffset = 4.5; yOffset = 0; zOffset = 10;
+		double tempX = x;
+		double tempY = y;
+		double tempZ = z;
+		x=0;
+		y=0;
+		z=0;
+		moveBy(tempX,tempY,tempZ);
+		setCenter();
 	}
 
 	@Override
 	protected void setCenter() {
 		// TODO Auto-generated method stub
-		cx = x; cy = y; cz = z-800;
+		cx = x+xOffset; cy = y+yOffset; cz = z+zOffset;
 	}
 	
 	@Override
@@ -37,7 +45,7 @@ public class ObjShape extends Shape3D {
 		// TODO Auto-generated method stub
 		this.colors = new Color[points.length];
 		for (int i = 0; i < colors.length; i++) {
-			colors[i] = GraphicDriver.randColor();
+			colors[i] = Color.white;
 		}
 	}
 
@@ -45,34 +53,45 @@ public class ObjShape extends Shape3D {
 	protected void setPoints() {
 		Scanner lineScanner;
 		this.points = new Point3D[myFaces.size()][];
-		ArrayList<Integer> myFace;
 		for (int i = 0; i < points.length; i++) {
-			myFace = new ArrayList<Integer>();
-			lineScanner = new Scanner(myFaces.get(i).substring(2));
-			while (lineScanner.hasNextInt())
-				myFace.add(lineScanner.nextInt());
-			points[i] = new Point3D[myFace.size()];
+			myFaces.set(i, myFaces.get(i).substring(myFaces.get(i).indexOf(' ') + 1));
+			String[] pts = myFaces.get(i).split(" ");
+			for (int j = 0; j < pts.length; j++) {
+				
+				if (pts[j].indexOf('/') > 0) {
+					pts[j] = pts[j].substring(0,pts[j].indexOf('/'));
+				}
+			}
+			points[i] = new Point3D[pts.length];
 			for (int j = 0; j < points[i].length; j++) {
-				points[i][j] = allPoints[myFace.get(j) - 1];
+				points[i][j] = allPoints[Integer.valueOf(pts[j]) - 1];
 			}
 		}
 		faces = points.length;
+		myFaces = null;
+		
+		for (String line : materials) {
+			
+		}
+	}
+	
+	private Color getMtl(String name) {
+		
 	}
 
 	protected void setAllPoints() {
 		ArrayList<Point3D> myPoints = new ArrayList<Point3D>();
 		ArrayList<String> vertices = new ArrayList<String>();
 		myFaces = new ArrayList<String>();
-		ArrayList<String> materials = new ArrayList<String>();
+		materials = new ArrayList<String>();
 		Scanner input = null;
 		try {
-			input = new Scanner(new File(filepath));
+			input = new Scanner(new File(filedir + objFilename));
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		int prevFace = 1;
-		int currentFace = 1;
+		int currentFace = 0;
 		while (input.hasNextLine()) {
 			String line = input.nextLine();
 			String identifier = line.substring(0, line.indexOf(' '));
@@ -84,17 +103,22 @@ public class ObjShape extends Shape3D {
 				myFaces.add(line);
 				currentFace++;
 			} else if (identifier.equals("usemtl")) {
-				materials.add(line + " " + prevFace + " " + currentFace);
-
-				prevFace = currentFace + 1;
+				if (materials.size() > 0)
+					materials.set(materials.size() - 1, materials.get(materials.size() - 1) + " " + currentFace);
+				materials.add(line + " " + currentFace);
+			} else if (identifier.equals("mtllib")) {
+				mtlFilename = line.substring(line.indexOf(' ') + 1);
 			}
+			
 		}
-
+		if (materials.size() > 0)
+			materials.set(materials.size() - 1, materials.get(materials.size() - 1) + " " + currentFace);
+		System.out.println(materials);
 		this.allPoints = new Point3D[vertices.size()];
 		Scanner lineScanner;
 		for (int i = 0; i < allPoints.length; i++) {
 			lineScanner = new Scanner(vertices.get(i).substring(2));
-			allPoints[i] = new Point3D(lineScanner.nextDouble(), lineScanner.nextDouble(), lineScanner.nextDouble());
+			allPoints[i] = new Point3D(-lineScanner.nextDouble(), -lineScanner.nextDouble(), -lineScanner.nextDouble());
 		}
 	}
 
@@ -106,5 +130,27 @@ public class ObjShape extends Shape3D {
 
 	}
 
+	public double getxOffset() {
+		return xOffset;
+	}
 
+	public void setxOffset(double xOffset) {
+		this.xOffset = xOffset;
+	}
+
+	public double getyOffset() {
+		return yOffset;
+	}
+
+	public void setyOffset(double yOffset) {
+		this.yOffset = yOffset;
+	}
+
+	public double getzOffset() {
+		return zOffset;
+	}
+
+	public void setzOffset(double zOffset) {
+		this.zOffset = zOffset;
+	}
 }

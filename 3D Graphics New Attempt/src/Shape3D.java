@@ -73,6 +73,18 @@ public abstract class Shape3D {
 		moveBy(0, 0, z-this.z);
 	}
 	
+	public double getCx() {
+		return cx;
+	}
+
+	public double getCy() {
+		return cy;
+	}
+
+	public double getCz() {
+		return cz;
+	}
+
 	public void setPosition(Point3D p) {
 		moveBy(p.x - x, p.y - y, p.z - z);
 	}
@@ -217,15 +229,18 @@ public abstract class Shape3D {
 	
 	//Moves the shape by dx, dy, and dz.
 	public final void moveBy(double dx, double dy, double dz) {
-		x+= dx;
-		y+= dy;
-		z+= dz;
 		Matrix transMatrix = Point3D.translationMatrix(dx, dy, dz);
 		for (Point3D[] facePoints : points) {
 			for (Point3D p : facePoints) {
-				p.matrixTransform(transMatrix);
+				p.setX(p.x+dx);
+				p.setY(p.y+dy);
+				p.setZ(p.z+dz);
+				
 			}
 		}
+		x+= dx;
+		y+= dy;
+		z+= dz;
 		setCenter();
 		refreshPolygons();
 	}

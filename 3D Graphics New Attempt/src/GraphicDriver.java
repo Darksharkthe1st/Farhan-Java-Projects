@@ -21,17 +21,18 @@ public class GraphicDriver {
 //		mainframe.add(c);
 		ObjShape obj = null;
 		try {
-			obj = new ObjShape(0,0,10,"C:\\Users\\farha\\Downloads\\videoShip.obj");
+			//obj = new ObjShape(0,0,10,"C:\\Users\\farha\\Downloads\\videoShip.obj");
+			obj = new ObjShape(0,0.24,1,"C:\\Users\\farha\\Downloads\\MarioKart.obj");
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
 		ShapeList3D listy = new ShapeList3D(screenWidth, screenHeight);
-		betterCube b = new betterCube(0, 5, 20, 1, 1, 1);
+		betterCube b = new betterCube(0, 5, 20, 1, 2, 1);
 		b.setName("Mouse Cube");
 		b.rotateAbout('x', 45);
-		betterCube b2 = new betterCube(0, 5, 14, 1, 1, 1);
+		betterCube b2 = new betterCube(0, 0, 14, 1, 2, 1);
 		b2.setName("Screen Cube");
 		mainframe.add(listy);
 		//mainframe.add(b);
@@ -49,7 +50,10 @@ public class GraphicDriver {
 		PointerInfo a = MouseInfo.getPointerInfo();
 		b2.rotateAbout('z', 45);
 		int count = 0;
-		while (true) {
+		
+		
+		boolean dosth = false;
+		while (dosth) {
 			Thread.sleep(10);
 			mainframe.repaint();
 			if (increase)
@@ -65,19 +69,21 @@ public class GraphicDriver {
 			b.setX(x/2);
 			else 
 				b.rotateAbout('x', 2);
-			b2.setX(x/2);
+			mainframe.repaint();
+			b2.rotateAbout('z', 0.1);
 mainframe.repaint();
+b2.setX(x/2);
 			//b.rotateAbout('x', 5);
 			//b2.setX(x);
-			b2.rotateAbout('x', 2);
+			//obj.rotateAbout('x', 2);
 			//b.rotateAbout('y', 2);
-			System.out.println(b.getXPos() + ", " + b.getYPos() + ", " + b.getZ());
-			System.out.println(b.cx + ", " + b.cy + ", " + b.cz);
+//			System.out.println(b.getXPos() + ", " + b.getYPos() + ", " + b.getZ());
+//			System.out.println(b.cx + ", " + b.cy + ", " + b.cz);
 			
-			System.out.println(obj.getXPos() + ", " + obj.getYPos() + ", " + obj.getZ());
-			//obj.rotateAbout('x', 4);
+			System.out.println("P: " + obj.getXPos() + ", " + obj.getYPos() + ", " + obj.getZ());
+			System.out.println("C: " + obj.getCx() + ", " +   obj.getCy() + ", "  + obj.getCz());
 			//obj.setX(x/2);
-			obj.rotateAbout('x', 1);
+//			obj.rotateAbout('x', 1);
 			System.out.println(obj.getP0());
 			//obj.setY(x/2);
 		}
