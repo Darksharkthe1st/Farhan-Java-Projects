@@ -22,7 +22,7 @@ public class GraphicDriver {
 		ObjShape obj = null;
 		try {
 			//obj = new ObjShape(0,0,10,"C:\\Users\\farha\\Downloads\\videoShip.obj");
-			obj = new ObjShape(0,0.24,3,"C:\\Users\\farha\\Downloads\\Sphere.obj");
+			obj = new ObjShape(0,0.24,5,"C:\\Users\\farha\\Downloads\\Sphere.obj");
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -47,13 +47,12 @@ public class GraphicDriver {
 		//System.out.println(Point3D.projectionMatrix());
 		boolean increase = true;
 		double x = 0;
-		
 		PointerInfo a = MouseInfo.getPointerInfo();
 		b2.rotateAbout('z', 45);
 		int count = 0;
 		
 
-		obj.scale(2,2,1);
+		//obj.scale(2,2,2);
 		
 		boolean dosth = true;
 		while (dosth) {
@@ -83,13 +82,13 @@ b2.setX(x/2);
 //			System.out.println(b.getXPos() + ", " + b.getYPos() + ", " + b.getZ());
 //			System.out.println(b.cx + ", " + b.cy + ", " + b.cz);
 			
-			System.out.println("P: " + obj.getXPos() + ", " + obj.getYPos() + ", " + obj.getZ());
-			System.out.println("C: " + obj.getCx() + ", " +   obj.getCy() + ", "  + obj.getCz());
-			//obj.setX(x/2);
-			obj.rotateAbout('y', 1);
+//			System.out.println("P: " + obj.getXPos() + ", " + obj.getYPos() + ", " + obj.getZ());
+//			System.out.println("C: " + obj.getCx() + ", " +   obj.getCy() + ", "  + obj.getCz());
+//			//obj.setX(x/2);
+			obj.rotateAbout('x', 1);
 //			obj.rotateAbout('x', 1);
-			System.out.println(obj.getP0());
-			//obj.setY(x/2);
+//			System.out.println(obj.getP0());
+//			//obj.setY(x/2);
 		}
 //		
 //		Matrix m;

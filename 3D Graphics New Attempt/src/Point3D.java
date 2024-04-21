@@ -31,6 +31,14 @@ public class Point3D{
 		return new Point3D(x,y,z,w);
 	}
 	
+	//returns distance to zero if null
+	public double distTo(Point3D p) {
+		if (p == null) 
+			return Math.sqrt(Math.pow(this.x, 2) + Math.pow(this.y, 2) + Math.pow(this.z, 2));
+		else
+			return Math.sqrt(Math.pow(this.x - p.x, 2) + Math.pow(this.y - p.y, 2) + Math.pow(this.z - p.z, 2));
+	}
+	
 	public double getX() {
 		return x;
 	}
@@ -150,7 +158,8 @@ public class Point3D{
 	}
 	
 	//Projects a point using the projection matrix
-	public static Point3D project(Matrix projMatrix, Point3D point) {
+	public static Point3D project(Point3D point) {
+		Matrix projMatrix = Point3D.projectionMatrix();
 		point = matrixTransform(point, projMatrix);
 		
 		if (Math.abs(point.w) > 0.01) {
@@ -244,7 +253,7 @@ public class Point3D{
 	
 	public String toString() {
 		String output = "";
-		output += "{ x: " + x + ", y: " + y + ", z: " + z + ", w: " + w + "}\n";
+		output += "{ x: " + x + ", y: " + y + ", z: " + z + ", w: " + w + "}";
 		//output += Arrays.deepToString(arraytrix) + "}\n";
 		return output;
 	}

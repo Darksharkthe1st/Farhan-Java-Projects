@@ -23,8 +23,8 @@ public class ObjShape extends Shape3D {
 		setAllPoints();
 		setPoints();
 		setColors();
-		makePolygons();
 		setCenter();
+		makePolygons();
 		xOffset = 4.5; yOffset = 0; zOffset = 10;
 		double tempX = x;
 		double tempY = y;
@@ -41,14 +41,15 @@ public class ObjShape extends Shape3D {
 			}
 			newAllPoints[newAllPoints.length - 1] = center;
 			allPoints = newAllPoints;
-			System.out.println("NEW CENTER");
+			System.out.println("NEW CENTER, " + objFilename);
 		}
 	}
 
 	@Override
 	protected void setCenter() {
 		centerInAllPoints();
-		if (center==null) center = new Point3D(x+xOffset, y+yOffset,z+zOffset);
+		if (center==null) {center = new Point3D(x+xOffset, y+yOffset,z+zOffset);
+		System.out.println("NULL CENTER");}
 		else center.setX(x+xOffset); center.setY(y+yOffset); center.setZ(z+zOffset);
 	}
 	
@@ -78,6 +79,14 @@ public class ObjShape extends Shape3D {
 	protected void setPoints() {
 		Scanner lineScanner;
 		this.points = new Point3D[myFaces.size()][];
+		
+		for (int i = 0; i < allPoints.length; i++) {
+			System.out.println(i + ": " + allPoints[i] + ", " + allPoints[i].distTo(null));
+			allPoints[i].setZ(allPoints[i].z + 5);
+			System.out.println(Point3D.project(allPoints[i]) + "\n");
+			allPoints[i].setZ(allPoints[i].z - 5);
+		}
+		
 		for (int i = 0; i < points.length; i++) {
 			myFaces.set(i, myFaces.get(i).substring(myFaces.get(i).indexOf(' ') + 1));
 			String[] pts = myFaces.get(i).split(" ");
@@ -90,6 +99,7 @@ public class ObjShape extends Shape3D {
 			points[i] = new Point3D[pts.length];
 			for (int j = 0; j < points[i].length; j++) {
 				points[i][j] = allPoints[Integer.valueOf(pts[j]) - 1];
+				System.out.println(i + ", " + j + ": " + allPoints[Integer.valueOf(pts[j]) - 1] + ", " + allPoints[Integer.valueOf(pts[j]) - 1].distTo(null) + "\n");
 			}
 		}
 		faces = points.length;
@@ -104,7 +114,7 @@ public class ObjShape extends Shape3D {
 		else if (name.equals("Material.001"))
 			return Color.pink;
 		else if (name.equals("Material.002"))
-			return Color.blue;
+			return Color.pink;
 		else if (name.equals("Material.003"))
 			return Color.green;
 		return Color.gray;
@@ -146,11 +156,11 @@ public class ObjShape extends Shape3D {
 		Scanner lineScanner;
 		for (int i = 0; i < allPoints.length; i++) {
 			lineScanner = new Scanner(vertices.get(i).substring(2));
-			allPoints[i] = new Point3D(-lineScanner.nextDouble(), -lineScanner.nextDouble(), -lineScanner.nextDouble());
+			allPoints[i] = new Point3D(lineScanner.nextDouble(), lineScanner.nextDouble(), -lineScanner.nextDouble());
 			double dist = Math.sqrt(Math.pow(allPoints[i].x,2) + Math.pow(allPoints[i].y,2) + Math.pow(allPoints[i].z,2));
 			if (dist > 2.9)
-				System.out.println("E " + ", " + vertices.get(i) + ", ");
-			System.out.println(i + ", " + dist + ", " + allPoints[i].x + ", " + allPoints[i].y + ", " + allPoints[i].z);
+				System.out.println("E " + dist + ", " + allPoints[i].z + ", " + vertices.get(i));
+			System.out.println(i + ", " + allPoints[i]);
 		}
 		
 		mtlColors = new ArrayList<Color>();

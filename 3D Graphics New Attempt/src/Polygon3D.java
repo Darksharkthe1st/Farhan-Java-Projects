@@ -35,19 +35,17 @@ public class Polygon3D implements Comparable {
 	}
 	
 	public void projectToPolygon(Point3D[] points) {
-		Matrix projector = Point3D.projectionMatrix();
 		Point3D[] result = new Point3D[points.length];
 		for (int i = 0; i < result.length; i++) 
-			result[i] = Point3D.project(projector, points[i]);
+			result[i] = Point3D.project(points[i]);
 		setPoints(result);
 		changesMade = true;
 	}
 	
 	public void refresh() {
-		Matrix projector = Point3D.projectionMatrix();
 		Point3D[] result = new Point3D[actualPoints.length];
 		for (int i = 0; i < result.length; i++) 
-			result[i] = Point3D.project(projector, actualPoints[i]);
+			result[i] = Point3D.project(actualPoints[i]);
 		setPoints(result);
 		changesMade = true;
 	}
