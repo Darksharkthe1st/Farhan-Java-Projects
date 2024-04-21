@@ -22,7 +22,7 @@ public class GraphicDriver {
 		ObjShape obj = null;
 		try {
 			//obj = new ObjShape(0,0,10,"C:\\Users\\farha\\Downloads\\videoShip.obj");
-			obj = new ObjShape(0,0.24,1,"C:\\Users\\farha\\Downloads\\MarioKart.obj");
+			obj = new ObjShape(0,0.24,3,"C:\\Users\\farha\\Downloads\\Sphere.obj");
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -36,12 +36,13 @@ public class GraphicDriver {
 		b2.setName("Screen Cube");
 		mainframe.add(listy);
 		//mainframe.add(b);
-		listy.add(b);
+		//listy.add(b);
 		listy.add(obj);
+		//obj.scale(4,4,4);
 		listy.setBackground(Color.red);
 		b.setOutlineColor(Color.black);
 		b2.setOutlineColor(Color.darkGray);
-		listy.add(b2);
+		//listy.add(b2);
 		mainframe.setVisible(true);
 		//System.out.println(Point3D.projectionMatrix());
 		boolean increase = true;
@@ -51,8 +52,10 @@ public class GraphicDriver {
 		b2.rotateAbout('z', 45);
 		int count = 0;
 		
+
+		obj.scale(2,2,1);
 		
-		boolean dosth = false;
+		boolean dosth = true;
 		while (dosth) {
 			Thread.sleep(10);
 			mainframe.repaint();
@@ -83,6 +86,7 @@ b2.setX(x/2);
 			System.out.println("P: " + obj.getXPos() + ", " + obj.getYPos() + ", " + obj.getZ());
 			System.out.println("C: " + obj.getCx() + ", " +   obj.getCy() + ", "  + obj.getCz());
 			//obj.setX(x/2);
+			obj.rotateAbout('y', 1);
 //			obj.rotateAbout('x', 1);
 			System.out.println(obj.getP0());
 			//obj.setY(x/2);

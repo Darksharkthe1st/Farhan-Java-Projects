@@ -13,7 +13,7 @@ import javax.swing.JPanel;
 //Provides as a template to do the heavy lifting for the 3D Graphics business
 public abstract class Shape3D {
 	protected double x,  y,  z;
-	protected double cx, cy, cz;
+	protected Point3D center = new Point3D(0,0,0);
 	protected int faces;
 	protected Point3D[][] points;
 	protected Point3D[] allPoints;
@@ -38,6 +38,7 @@ public abstract class Shape3D {
 		setPoints();
 		makePolygons();
 		setCenter();
+		centerInAllPoints();
 	}
 	
 	//This is only for objShape, all of the shape stuff is handled in there
@@ -74,15 +75,15 @@ public abstract class Shape3D {
 	}
 	
 	public double getCx() {
-		return cx;
+		return center.x;
 	}
 
 	public double getCy() {
-		return cy;
+		return center.y;
 	}
 
 	public double getCz() {
-		return cz;
+		return center.z;
 	}
 
 	public void setPosition(Point3D p) {
@@ -95,6 +96,18 @@ public abstract class Shape3D {
 	
 	//Set values of cx, cy, and cz (center of shape) for use in rotation 
 	protected abstract void setCenter();
+	
+	protected final void centerInAllPoints() {
+		if (!allPoints[allPoints.length - 1].equals(center)) {
+			Point3D[] newAllPoints = new Point3D[allPoints.length + 1];
+			for (int i = 0; i < allPoints.length; i++) {
+				newAllPoints[i] = allPoints[i];
+			}
+			newAllPoints[newAllPoints.length - 1] = center;
+			allPoints = newAllPoints;
+			System.out.println("NEW CENTER");
+		}
+	}
 	
 	public Color[] getColors() {
 		return colors;
@@ -156,6 +169,7 @@ public abstract class Shape3D {
 	//Points must be made in counterclockwise order for vector normalization to work right
 	protected abstract void setPoints();
 	
+	//Makes all the points. Shape3Ds will have the center added to allPoints if not done already.
 	protected abstract void setAllPoints();
 	
 	//Makes the polygon from the points.  so it cannot be changed.
@@ -198,9 +212,9 @@ public abstract class Shape3D {
 		setCenter();
 		Matrix rotation = Point3D.rotationMatrix(theta, axis);
 		for (Point3D point : allPoints) {
-			point.setX(point.getX() - cx);
-			point.setY(point.getY() - cy);
-			point.setZ(point.getZ() - cz);
+			point.setX(point.getX() - center.x);
+			point.setY(point.getY() - center.y);
+			point.setZ(point.getZ() - center.z);
 			
 			double dist1;
 			
@@ -220,9 +234,9 @@ public abstract class Shape3D {
 				point.setY(point.getY() * dist1 / dist2);
 			if (axis != 'z')
 				point.setZ(point.getZ() * dist1 / dist2);
-			point.setX(point.getX() + cx);
-			point.setY(point.getY() + cy);
-			point.setZ(point.getZ() + cz);
+			point.setX(point.getX() + center.x);
+			point.setY(point.getY() + center.y);
+			point.setZ(point.getZ() + center.z);
 		}
 		refreshPolygons();
 	}
@@ -241,8 +255,17 @@ public abstract class Shape3D {
 		x+= dx;
 		y+= dy;
 		z+= dz;
-		setCenter();
 		refreshPolygons();
+	}
+	
+	public final void scale(double x, double y, double z) {
+		if (center == null) setCenter();
+		System.out.println("Scaled");
+		for (Point3D p : allPoints) {
+			p.scale(x, y, z);
+		}
+		refreshPolygons();
+		
 	}
 	
 	public final int countVisible() {

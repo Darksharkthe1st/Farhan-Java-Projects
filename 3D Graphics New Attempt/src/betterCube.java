@@ -92,9 +92,9 @@ public class betterCube extends Shape3D {
 	@Override
 	protected void setCenter() {
 		// TODO Auto-generated method stub
-		this.cx = x;
-		this.cy = y;
-		this.cz = z;
+		this.center.x = x;
+		this.center.y = y;
+		this.center.z = z;
 	}
 	
 	//Setting polygon names for debugging

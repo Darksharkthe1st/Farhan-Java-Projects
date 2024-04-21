@@ -8,7 +8,7 @@ public class Point3D{
 	double x, y, z, w;
 	
 	public static Matrix projector;
-	public static Point3D lightSource = new Point3D(0,0.7,0.5); //Vector representing direction of light
+	public static Point3D lightSource = new Point3D(0,0,-1); //Vector representing direction of light
 	//The camera is where we imagine our imaginary viewer being placed
 	public static Point3D camera = new Point3D(0,0,0);
 	
@@ -25,6 +25,10 @@ public class Point3D{
 		this.y = y;
 		this.z = z;
 		this.w = w;
+	}
+	
+	public Point3D dupe() {
+		return new Point3D(x,y,z,w);
 	}
 	
 	public double getX() {
@@ -66,10 +70,10 @@ public class Point3D{
 
 	//Transforms a point by a matrix through mulitplication
 	public void matrixTransform(Matrix transformer) {
-		x = x * transformer.arraytrix[0][0] + y * transformer.arraytrix[0][1] + z * transformer.arraytrix[0][2] + w * transformer.arraytrix[0][3];
-		y = x * transformer.arraytrix[1][0] + y * transformer.arraytrix[1][1] + z * transformer.arraytrix[1][2] + w * transformer.arraytrix[1][3];
-		z = x * transformer.arraytrix[2][0] + y * transformer.arraytrix[2][1] + z * transformer.arraytrix[2][2] + w * transformer.arraytrix[2][3];
-		w = x * transformer.arraytrix[3][0] + y * transformer.arraytrix[3][1] + z * transformer.arraytrix[3][2] + w * transformer.arraytrix[3][3];
+		this.x = x * transformer.arraytrix[0][0] + y * transformer.arraytrix[0][1] + z * transformer.arraytrix[0][2] + w * transformer.arraytrix[0][3];
+		this.y = x * transformer.arraytrix[1][0] + y * transformer.arraytrix[1][1] + z * transformer.arraytrix[1][2] + w * transformer.arraytrix[1][3];
+		this.z = x * transformer.arraytrix[2][0] + y * transformer.arraytrix[2][1] + z * transformer.arraytrix[2][2] + w * transformer.arraytrix[2][3];
+		this.w = x * transformer.arraytrix[3][0] + y * transformer.arraytrix[3][1] + z * transformer.arraytrix[3][2] + w * transformer.arraytrix[3][3];
 	}
 	
 	//Generates the projection matrix using the Driver's set values
@@ -129,6 +133,20 @@ public class Point3D{
 		result.arraytrix[1][3] = y;
 		result.arraytrix[2][3] = z;	
 		return result;
+	}
+	
+	public static Matrix scalingMatrix(double x, double y, double z) {
+		Matrix result = Matrix.identity(4);
+		result.arraytrix[0][0] = x;
+		result.arraytrix[1][1] = y;
+		result.arraytrix[2][2] = z;
+		return result;
+	}
+	
+	public void scale(double x, double y, double z) {
+		this.x *= x;
+		this.y *= y;
+		this.z *= z;
 	}
 	
 	//Projects a point using the projection matrix

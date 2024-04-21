@@ -12,6 +12,8 @@ public class ObjShape extends Shape3D {
 	String mtlFilename;
 	ArrayList<String> myFaces = new ArrayList<String>();
 	ArrayList<String> materials = new ArrayList<String>();
+	ArrayList<Integer> mtlOrder = new ArrayList<Integer>();
+	ArrayList<Color> mtlColors = new ArrayList<Color>();
 	double xOffset, yOffset, zOffset;
 	public ObjShape(double x, double y, double z, String filepath) throws FileNotFoundException {
 		super(x, y, z);
@@ -32,21 +34,44 @@ public class ObjShape extends Shape3D {
 		z=0;
 		moveBy(tempX,tempY,tempZ);
 		setCenter();
+		if (!allPoints[allPoints.length - 1].equals(center)) {
+			Point3D[] newAllPoints = new Point3D[allPoints.length + 1];
+			for (int i = 0; i < allPoints.length; i++) {
+				newAllPoints[i] = allPoints[i];
+			}
+			newAllPoints[newAllPoints.length - 1] = center;
+			allPoints = newAllPoints;
+			System.out.println("NEW CENTER");
+		}
 	}
 
 	@Override
 	protected void setCenter() {
-		// TODO Auto-generated method stub
-		cx = x+xOffset; cy = y+yOffset; cz = z+zOffset;
+		centerInAllPoints();
+		if (center==null) center = new Point3D(x+xOffset, y+yOffset,z+zOffset);
+		else center.setX(x+xOffset); center.setY(y+yOffset); center.setZ(z+zOffset);
 	}
 	
 	@Override
 	protected void setColors() {
 		// TODO Auto-generated method stub
 		this.colors = new Color[points.length];
-		for (int i = 0; i < colors.length; i++) {
-			colors[i] = Color.white;
+		if (materials.size() > 0) {
+			int index = 0;
+			int currentMtl = 0;
+			while (index < colors.length) {
+				if (index >= mtlOrder.get(currentMtl)) {
+					currentMtl++;
+				}
+				colors[index++] = getMtl(materials.get(currentMtl-1));
+			}
+		} else {
+			for (int i = 0; i < colors.length; i++) {
+				colors[i] = GraphicDriver.randColor();
+			}
 		}
+		
+		System.out.println(mtlOrder);
 	}
 
 	@Override
@@ -70,13 +95,19 @@ public class ObjShape extends Shape3D {
 		faces = points.length;
 		myFaces = null;
 		
-		for (String line : materials) {
-			
-		}
 	}
 	
 	private Color getMtl(String name) {
-		
+		System.out.println(name);
+		if (name.equals("m_Body"))
+			return Color.red;
+		else if (name.equals("Material.001"))
+			return Color.pink;
+		else if (name.equals("Material.002"))
+			return Color.blue;
+		else if (name.equals("Material.003"))
+			return Color.green;
+		return Color.gray;
 	}
 
 	protected void setAllPoints() {
@@ -103,23 +134,34 @@ public class ObjShape extends Shape3D {
 				myFaces.add(line);
 				currentFace++;
 			} else if (identifier.equals("usemtl")) {
-				if (materials.size() > 0)
-					materials.set(materials.size() - 1, materials.get(materials.size() - 1) + " " + currentFace);
-				materials.add(line + " " + currentFace);
+				materials.add(line.substring(line.indexOf(" ") + 1));
+				mtlOrder.add(currentFace);
 			} else if (identifier.equals("mtllib")) {
 				mtlFilename = line.substring(line.indexOf(' ') + 1);
-			}
-			
+			}	
 		}
-		if (materials.size() > 0)
-			materials.set(materials.size() - 1, materials.get(materials.size() - 1) + " " + currentFace);
+		mtlOrder.add(currentFace);
 		System.out.println(materials);
 		this.allPoints = new Point3D[vertices.size()];
 		Scanner lineScanner;
 		for (int i = 0; i < allPoints.length; i++) {
 			lineScanner = new Scanner(vertices.get(i).substring(2));
 			allPoints[i] = new Point3D(-lineScanner.nextDouble(), -lineScanner.nextDouble(), -lineScanner.nextDouble());
+			double dist = Math.sqrt(Math.pow(allPoints[i].x,2) + Math.pow(allPoints[i].y,2) + Math.pow(allPoints[i].z,2));
+			if (dist > 2.9)
+				System.out.println("E " + ", " + vertices.get(i) + ", ");
+			System.out.println(i + ", " + dist + ", " + allPoints[i].x + ", " + allPoints[i].y + ", " + allPoints[i].z);
 		}
+		
+		mtlColors = new ArrayList<Color>();
+		input = null;
+		try {
+			input = new Scanner(new File(filedir + mtlFilename));
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 
 	// Sets the names of the polygons for testing
