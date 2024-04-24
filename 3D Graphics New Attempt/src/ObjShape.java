@@ -117,7 +117,7 @@ public class ObjShape extends Shape3D {
 			return Color.pink;
 		else if (name.equals("Material.003"))
 			return Color.green;
-		return Color.gray;
+		return Color.orange;
 	}
 
 	protected void setAllPoints() {
