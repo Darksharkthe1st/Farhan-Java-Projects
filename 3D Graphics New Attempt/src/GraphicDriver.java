@@ -22,7 +22,7 @@ public class GraphicDriver {
 		ObjShape obj = null;
 		try {
 			//obj = new ObjShape(0,0,10,"C:\\Users\\farha\\Downloads\\videoShip.obj");
-			obj = new ObjShape(0,0.24,5,"C:\\Users\\farha\\Downloads\\Sphere.obj");
+			obj = new ObjShape(0,0.24,10,"C:\\Users\\farha\\Downloads\\triangularPyramid.obj");
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -86,6 +86,8 @@ b2.setX(x/2);
 //			System.out.println("C: " + obj.getCx() + ", " +   obj.getCy() + ", "  + obj.getCz());
 //			//obj.setX(x/2);
 			obj.rotateAbout('x', 1);
+			System.out.println(obj.getCx() + ", " + obj.getCy() + ", " + obj.getCz());
+			System.out.println(obj.getP0());
 //			obj.rotateAbout('x', 1);
 //			System.out.println(obj.getP0());
 //			//obj.setY(x/2);
