@@ -94,7 +94,7 @@ public class Point3D{
 			double zFar = GraphicDriver.zFar;
 			double zNear = GraphicDriver.zNear;
 			double[][] arrayx = new double[4][4];
-			double aspectRatio = height / width;
+			double aspectRatio = height * 1.0 / width;
 			double fovRad = 1 / Math.tan(fov * 0.5 * Math.PI / 180);
 			arrayx[0][0] = aspectRatio * fovRad;
 			arrayx[1][1] = fovRad;
@@ -167,11 +167,8 @@ public class Point3D{
 			point.setY(point.y/point.w);
 		}
 		
-		point.setX(point.x + 0.5);
-		point.setY(point.y + 0.5);
-		
-		point.setX(point.x * GraphicDriver.screenWidth);
-		point.setY(point.y * GraphicDriver.screenHeight);
+		point.setX((point.x + 0.5 )* GraphicDriver.screenWidth);
+		point.setY((point.y + 0.5 ) * GraphicDriver.screenHeight);
 		return point;
 	}
 

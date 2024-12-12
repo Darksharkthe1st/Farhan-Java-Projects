@@ -13,7 +13,7 @@ import javax.swing.JPanel;
 //Provides as a template to do the heavy lifting for the 3D Graphics business
 public abstract class Shape3D {
 	protected double x,  y,  z;
-	protected Point3D center = new Point3D(0,0,0);
+	protected Point3D center;
 	protected int faces;
 	protected Point3D[][] points;
 	protected Point3D[] allPoints;
@@ -30,6 +30,7 @@ public abstract class Shape3D {
 		this.z = z;
 		this.faces = faces;
 		this.name = "Shape";
+		center = new Point3D(0,0,0);
 		colors = new Color[faces];
 		points = new Point3D[faces][];
 		polygons = new Polygon3D[faces];
@@ -44,6 +45,7 @@ public abstract class Shape3D {
 	//This is only for objShape, all of the shape stuff is handled in there
 	//The separate constructor for objShape is so it can be made without knowing faces in advance
 	protected Shape3D(double x, double y, double z) {
+		center = new Point3D(0,0,0);
 		this.x = x;
 		this.y = y;
 		this.z = z;
@@ -209,12 +211,22 @@ public abstract class Shape3D {
 	
 	//Rotates the shape about the specified axis by theta degrees, where axis is x, y, or z.
 	public final void rotateAbout(char axis, double theta) {
-		setCenter();
+		//System.out.println("C1: " + center);
+		//setCenter();
+		//System.out.println("My Center: " + center);
+		//System.out.println("C2: " + center);
 		Matrix rotation = Point3D.rotationMatrix(theta, axis);
 		for (Point3D point : allPoints) {
-			point.setX(point.getX() - center.x);
-			point.setY(point.getY() - center.y);
-			point.setZ(point.getZ() - center.z);
+			if (point.equals(center)) continue;
+			//System.out.println("CENTERE: " + point.x + ", " + point.y + ", " + point.z);
+			if (axis != 'x')
+				point.setX(point.getX() - center.x);
+			if (axis != 'y')
+				point.setY(point.getY() - center.y);
+			if (axis != 'z')
+				point.setZ(point.getZ() - center.z);
+			
+			//System.out.println("NEWP: " + point.x + ", " + point.y + ", " + point.z);
 			
 			double dist1;
 			
@@ -222,23 +234,40 @@ public abstract class Shape3D {
 			else if (axis == 'x') dist1 = Math.sqrt(Math.pow(point.getZ(), 2) + Math.pow(point.getY(), 2));
 			else dist1 = Math.sqrt(Math.pow(point.getX(), 2) + Math.pow(point.getZ(), 2));
 			
+			if (Math.abs(dist1) < 0.01)
+				continue;
+			
+			
 			point.matrixTransform(rotation);
 			double dist2;
 			
 			if (axis == 'z') dist2 = Math.sqrt(Math.pow(point.getX(), 2) + Math.pow(point.getY(), 2));
 			else if (axis == 'x') dist2 = Math.sqrt(Math.pow(point.getZ(), 2) + Math.pow(point.getY(), 2));
 			else dist2 = Math.sqrt(Math.pow(point.getX(), 2) + Math.pow(point.getZ(), 2));
+			
+			
 			if (axis != 'x')
 				point.setX(point.getX() * dist1 / dist2);
 			if (axis != 'y')
 				point.setY(point.getY() * dist1 / dist2);
 			if (axis != 'z')
 				point.setZ(point.getZ() * dist1 / dist2);
-			point.setX(point.getX() + center.x);
-			point.setY(point.getY() + center.y);
-			point.setZ(point.getZ() + center.z);
+			
+			//System.out.println("SHEWP: " + point.x + ", " + point.y + ", " + point.z);
+			
+			
+			if (axis != 'x')
+				point.setX(point.getX() + center.x);
+			if (axis != 'y')
+				point.setY(point.getY() + center.y);
+			if (axis != 'z')
+				point.setZ(point.getZ() + center.z);
+
+			//System.out.println("POINTERE: " + point.x + ", " + point.y + ", " + point.z);
 		}
+		//System.out.println("C3: " + center);
 		refreshPolygons();
+		//System.out.println("C4: " + center);
 	}
 	
 	//Moves the shape by dx, dy, and dz.
@@ -252,6 +281,13 @@ public abstract class Shape3D {
 				
 			}
 		}
+		
+//		System.out.println("CENTERCAHGNE");
+//		System.out.println(center);
+		center.setX(center.x+dx);
+		center.setY(center.y+dy);
+		center.setZ(center.z+dz);
+//		System.out.println(center);
 		x+= dx;
 		y+= dy;
 		z+= dz;
@@ -265,7 +301,7 @@ public abstract class Shape3D {
 			p.scale(x, y, z);
 		}
 		refreshPolygons();
-		
+		System.out.println("MECENTER: " + center);
 	}
 	
 	public final int countVisible() {

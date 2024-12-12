@@ -4,6 +4,7 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
@@ -106,11 +107,12 @@ class ShapeList3D extends JPanel {
 			}
 
 		}
+		
 		// We paste the image onto our Graphics window
 		g.drawImage(screen, 0, 0, width, height, bgColor, null);
 
 	}
-
+	
 	public void paintComponent(Graphics g) {
 		renderShape3Ds(g);
 	}

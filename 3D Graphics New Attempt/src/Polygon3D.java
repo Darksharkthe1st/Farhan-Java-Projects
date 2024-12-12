@@ -18,8 +18,6 @@ public class Polygon3D implements Comparable {
 	private double avgDist;
 	private Polygon myself;
 	public String name; //Name variable just to keep track of which is which when debugging
-	private boolean visibility = false; //Keeps track of how visible the polygon is
-	private boolean rotated = true;
 	
 	//Keeps track if any changes were made to the internal variables
 	//If changes were made, it remakes the polygon when asked to return it
@@ -36,16 +34,19 @@ public class Polygon3D implements Comparable {
 	
 	public void projectToPolygon(Point3D[] points) {
 		Point3D[] result = new Point3D[points.length];
-		for (int i = 0; i < result.length; i++) 
+		for (int i = 0; i < result.length; i++) {
 			result[i] = Point3D.project(points[i]);
+		}
 		setPoints(result);
 		changesMade = true;
 	}
 	
+	//same thing as projectToPolygon
 	public void refresh() {
 		Point3D[] result = new Point3D[actualPoints.length];
-		for (int i = 0; i < result.length; i++) 
+		for (int i = 0; i < result.length; i++) {
 			result[i] = Point3D.project(actualPoints[i]);
+		}
 		setPoints(result);
 		changesMade = true;
 	}
@@ -58,7 +59,7 @@ public class Polygon3D implements Comparable {
 		for (int i = 0; i < points.length; i++) {
 			xpoints[i] = (int)points[i].x;
 			ypoints[i] = (int)points[i].y;
-			zpoints[i] = points[i].z;
+			zpoints[i] = points[i].w;
 		}
 		makePolygon();
 		makeAvgs();
