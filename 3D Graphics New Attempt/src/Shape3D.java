@@ -34,6 +34,10 @@ public abstract class Shape3D {
 		colors = new Color[faces];
 		points = new Point3D[faces][];
 		polygons = new Polygon3D[faces];
+		setup();
+	}
+
+	protected void setup() {
 		setColors();
 		setAllPoints();
 		setPoints();

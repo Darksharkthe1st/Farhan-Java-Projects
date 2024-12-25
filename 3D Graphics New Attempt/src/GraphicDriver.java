@@ -19,16 +19,16 @@ public class GraphicDriver {
 		mainframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 //		Cube c = new Cube(0, 0, 3, 1, 1, 1);
 //		mainframe.add(c);
-		ObjShape obj = null;
-		try {
-			//obj = new ObjShape(0,0,4,"Cube.obj");
-			obj = new ObjShape(2,2,4,"Cube.obj");
-			//obj = new ObjShape(2,-2,5,"C:\\Users\\farha\\Downloads\\Cube.obj");
-			//obj = new ObjShape(2,-2,5,"C:\\Users\\farha\\Downloads\\bigSphere.obj");
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		// ObjShape obj = null;
+		// try {
+		// 	//obj = new ObjShape(0,0,4,"Cube.obj");
+		// 	obj = new ObjShape(2,2,4,"Cube.obj");
+		// 	//obj = new ObjShape(2,-2,5,"C:\\Users\\farha\\Downloads\\Cube.obj");
+		// 	//obj = new ObjShape(2,-2,5,"C:\\Users\\farha\\Downloads\\bigSphere.obj");
+		// } catch (FileNotFoundException e) {
+		// 	// TODO Auto-generated catch block
+		// 	e.printStackTrace();
+		// }
 		
 //		obj.rotateAbout('x', 45);
 //		obj.rotateAbout('y', 45);
@@ -38,10 +38,10 @@ public class GraphicDriver {
 		betterCube b = new betterCube(1.616, 1.616, 5, 1, 1, 1);
 		b.setName("Mouse Cube");
 		b.rotateAbout('x', 45);
-		betterCube b2 = new betterCube(0, 0, 6, 1, 1, 1);
+		Pyramidy b2 = new Pyramidy(0, 0, 10, 1, 1, 1);
 		b2.setName("Screen Cube");
 		mainframe.add(listy);
-		listy.add(obj);
+		//listy.add(obj);
 		listy.setBackground(Color.red);
 		b.setOutlineColor(Color.black);
 		b2.setOutlineColor(Color.darkGray);
@@ -54,7 +54,7 @@ public class GraphicDriver {
 		
 		double x = 0;
 		PointerInfo a = MouseInfo.getPointerInfo();
-		b2.rotateAbout('z', 45);
+		//b2.rotateAbout('z', 45);
 		int count = 0;
 		
 		while (true) {
@@ -66,7 +66,7 @@ public class GraphicDriver {
 				x-= 0.1;
 			if (Math.abs(x) > 3)
 				increase = !increase;
-			obj.rotateAbout('z', 10);
+			//obj.rotateAbout('z', 10);
 			b.rotateAbout('x', 3);
 			b.setX(x);
 			b2.setY(-x);

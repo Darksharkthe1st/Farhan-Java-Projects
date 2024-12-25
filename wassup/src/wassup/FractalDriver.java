@@ -1,7 +1,14 @@
 package wassup;
 import java.awt.BorderLayout;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+import java.awt.event.WindowStateListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 
 import javax.imageio.ImageIO;
@@ -41,7 +48,7 @@ public class FractalDriver {
 		levelSlider.setPaintTicks(true);
 		levelSlider.setPaintLabels(true);
 		//Our class
-		Fractal f = new Fractal(levelSlider.getValue(), 3, 500, 400, 300, 0.9, 0.4);
+		Fractal f = new Fractal(levelSlider.getValue(), 3, mainframe.getWidth() /2 ,mainframe.getHeight() /2 , 300, 0.9, 0.4);
 		mainframe.add(f);
 		mainframe.setVisible(true);
 
@@ -68,15 +75,40 @@ public class FractalDriver {
 			}
 			
 		});
+
 		
-		
-		
+		//Move the fractal when the window is resized
+		mainframe.addComponentListener(new ComponentListener() {
+
+			public void componentHidden(ComponentEvent arg0) {}
+			public void componentMoved(ComponentEvent arg0) {}
+			public void componentShown(ComponentEvent arg0) {}
+
+			@Override
+			public void componentResized(ComponentEvent arg0) {
+				// TODO Auto-generated method stub
+				f.setX(mainframe.getWidth()/2);
+				//Subtract 30 to account for slider height
+				f.setY((mainframe.getHeight()-30)/2);
+			}
+		});
 		
 		double theta = 0;
 		int count = 0;
+		if (useDemo) {
+			f.setWidthRatio(0.9);
+		}
+
+		int x = 0;
+
+		//Demo made to show off the coolest parts of the program
 		while (useDemo) {
-			if (count++ % 50 == 0)
-				f.setSides(f.getSides() + 1);
+			x++;
+			f.setSides((int)Math.abs(1000 * Math.sin(0.001 * x)) + 1);
+			f.setHeightRatio(Math.sin(x * 0.01));
+			f.setWidthRatio(Math.sin(x* 0.01));
+			if (f.getSides() % 100 == 0)
+				System.out.println(f.getSides());
 			Thread.sleep(50);
 			theta = (theta + 0.1) % (Math.PI * 2);
 			f.setAngleOffset(theta);
